@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Doctor Dashboard — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%);
+            border-radius: var(--r);
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 194, 255, 0.2) 0%, transparent 70%);
+        }
+
+        .welcome-text h2 {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .welcome-text p {
+            font-size: 14px;
+            opacity: 0.75;
+            font-weight: 300;
+        }
+
+        .avail-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--r);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avail-box-txt .lbl {
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .avail-box-txt .sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            margin-top: 2px;
+        }
+
+        .tab-btns {
+            display: flex;
+            gap: 4px;
+            background: var(--off-2);
+            border-radius: var(--r-sm);
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--t);
+            background: transparent;
+            color: var(--muted);
+            font-family: var(--font);
+        }
+
+        .tab-btn.on {
+            background: white;
+            color: var(--navy);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.on {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .msg-card {
+            background: white;
+            border-radius: var(--r);
+            padding: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xs);
+            margin-bottom: 12px;
+            transition: var(--t);
+        }
+
+        .msg-card:hover {
+            box-shadow: var(--shadow);
+            border-color: rgba(20, 71, 230, 0.2);
+        }
+
+        .msg-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .msg-sender {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .msg-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .msg-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .msg-contact {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .msg-problem {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.6;
+            background: var(--off);
+            border-radius: var(--r-sm);
+            padding: 12px 14px;
+            margin-top: 10px;
+        }
+
+        .prof-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media(max-width:768px) {
+            .prof-form {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner {
+                flex-direction: column;
+            }
+
+            .avail-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-mark">🏥</div>SmartDoctor
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+        </ul>
+        <div class="nav-actions">
+            <li id="nav-logout" style="display:none;list-style:none">
+                <a href="#" onclick="logout()" class="btn btn-ghost btn-sm">Logout</a>
+            </li>
+            <li id="nav-user" style="list-style:none"></li>
+        </div>
+    </nav>
+
+    <div class="dash">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sb-profile">
+                <div class="sb-av" id="sb-av">D</div>
+                <div>
+                    <div class="sb-name" id="sb-name">Doctor</div>
+                    <div class="sb-role">Doctor Account</div>
+                </div>
+            </div>
+            <div class="sb-label">Main Menu</div>
+            <ul class="sb-nav">
+                <li><a href="#top" class="on"><span class="ico">📊</span> Dashboard</a></li>
+                <li><a href="#appts"><span class="ico">📅</span> Appointments <span class="sb-badge"
+                            id="b-appt">0</span></a></li>
+                <li><a href="#msgs"><span class="ico">💬</span> Messages <span class="sb-badge" id="b-msg">0</span></a>
+                </li>
+                <li><a href="#profile"><span class="ico">👤</span> Edit Profile</a></li>
+            </ul>
+            <div class="sb-label">Account</div>
+            <ul class="sb-nav">
+                <li><a href="#" onclick="logout()"><span class="ico">🚪</span> Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+
+            <!-- Welcome Banner with Toggle -->
+            <div class="welcome-banner" id="top">
+                <div class="welcome-text">
+                    <h2>Welcome, Dr. <span id="dname">...</span> 👋</h2>
+                    <p>Manage your appointments, messages and profile</p>
+                </div>
+                <div class="avail-box">
+                    <div class="avail-box-txt">
+                        <div class="lbl">Availability</div>
+                        <div class="sub" id="avail-lbl">🟢 Available</div>
+                    </div>
+                    <div class="tog" onclick="toggleAvail()">
+                        <div class="tog-track on" id="tog">
+                            <div class="tog-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-ico ic-b">📅</div>
+                    <div>
+                        <div class="stat-n" id="s-total">0</div>
+                        <div class="stat-l">Total Appointments</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-ico ic-y">⏳</div>
+                    <div>
+                        <div class="stat-n" id="s-pend">0</div>
+                        <div class="stat-l">Pending</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-ico ic-g">✅</div>
+                    <div>
+                        <div class="stat-n" id="s-conf">0</div>
+                        <div class="stat-l">Confirmed</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div class="stat-ico ic-c">💬</div>
+                    <div>
+                        <div class="stat-n" id="s-msg">0</div>
+                        <div class="stat-l">Messages</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPOINTMENTS -->
+            <div id="appts" style="margin-bottom:32px;">
+                <div
+                    style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                    <h3 style="font-size:16px;font-weight:700;color:var(--navy);">📅 Patient Appointments</h3>
+                    <select id="f-status" onchange="filterAppts()"
+                        style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;font-family:var(--font);cursor:pointer;background:white;">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="tbl-box">
+                    <div class="tbl-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Type</th>
+                                    <th>Problem</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="a-tbody">
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="loader">
+                                            <div class="spin"></div>Loading...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div id="msgs" style="margin-bottom:32px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h3 style="font-size:16px;font-weight:700;color:var(--navy);">💬 Patient Messages</h3>
+                    <span class="badge b-blue" id="msg-count">0 messages</span>
+                </div>
+                <div id="msg-cards">
+                    <div class="loader">
+                        <div class="spin"></div>Loading...
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT PROFILE -->
+            <div id="profile">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                    <h3 style="font-size:16px;font-weight:700;color:var(--navy);">👤 Update Profile</h3>
+                </div>
+                <div class="tbl-box">
+                    <div style="padding:28px;">
+                        <div class="prof-form">
+                            <div class="fgroup">
+                                <label>Specialization</label>
+                                <select class="finput" id="spec">
+                                    <option>General Physician</option>
+                                    <option>Cardiologist</option>
+                                    <option>Dermatologist</option>
+                                    <option>Orthopedic</option>
+                                    <option>Pediatrician</option>
+                                    <option>Psychiatrist</option>
+                                    <option>Gynecologist</option>
+                                    <option>Neurologist</option>
+                                    <option>Ophthalmologist</option>
+                                    <option>ENT Specialist</option>
+                                    <option>Dentist</option>
+                                    <option>Gastroenterologist</option>
+                                    <option>Endocrinologist</option>
+                                    <option>Nephrologist</option>
+                                    <option>Urologist</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>City</label>
+                                <select class="finput" id="city">
+                                    <option>Lahore</option>
+                                    <option>Karachi</option>
+                                    <option>Islamabad</option>
+                                    <option>Rawalpindi</option>
+                                    <option>Faisalabad</option>
+                                    <option>Multan</option>
+                                    <option>Peshawar</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>Consultation Type</label>
+                                <select class="finput" id="ctype">
+                                    <option value="Both">Both (Online & Physical)</option>
+                                    <option value="Online">Online Only</option>
+                                    <option value="Physical">Physical Only</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>Years of Experience</label>
+                                <input class="finput" type="number" id="exp" min="0" placeholder="e.g. 5" />
+                            </div>
+                            <div class="fgroup">
+                                <label>Phone Number</label>
+                                <input class="finput" type="text" id="phone" placeholder="03001234567" />
+                            </div>
+                            <div class="fgroup">
+                                <label>Profile Picture</label>
+                                <input class="finput" type="file" id="pic" accept="image/*" />
+                            </div>
+                        </div>
+                        <div class="fgroup" style="margin-top:4px;">
+                            <label>Bio</label>
+                            <textarea class="finput" id="bio"
+                                placeholder="Tell patients about your expertise..."></textarea>
+                        </div>
+                        <div id="pmsg"></div>
+                        <button class="btn btn-primary" onclick="saveProfile()">💾 Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let isAvail = true;
+        let allAppts = [];
+
+        window.onload = async () => {
+            if (!requireAuth('doctor')) return;
+            const u = getUser();
+            document.getElementById('dname').textContent = u.name;
+            document.getElementById('sb-name').textContent = u.name;
+            document.getElementById('sb-av').textContent = u.name.charAt(0).toUpperCase();
+            setupNav();
+
+            try {
+                const d = await api.getMyProfile();
+                if (d && d._id) {
+                    isAvail = d.isAvailable;
+                    updateTog();
+                    document.getElementById('spec').value = d.specialization || 'General Physician';
+                    document.getElementById('city').value = d.city || 'Lahore';
+                    document.getElementById('ctype').value = d.consultationType || 'Both';
+                    document.getElementById('exp').value = d.experience || 0;
+                    document.getElementById('phone').value = d.phone || '';
+                    document.getElementById('bio').value = d.bio || '';
+                }
+            } catch { }
+
+            loadAppts();
+            loadMsgs();
+        };
+
+        /* ── AVAILABILITY ── */
+        const updateTog = () => {
+            const t = document.getElementById('tog');
+            const l = document.getElementById('avail-lbl');
+            if (isAvail) { t.classList.add('on'); l.textContent = '🟢 Available'; }
+            else { t.classList.remove('on'); l.textContent = '🔴 Busy'; }
+        };
+
+        const toggleAvail = async () => {
+            try {
+                const r = await api.toggleAvailability();
+                isAvail = r.isAvailable;
+                updateTog();
+                toast(isAvail ? 'You are now available!' : 'Status set to busy', 'ok');
+            } catch { toast('Failed to update', 'err'); }
+        };
+
+        /* ── APPOINTMENTS ── */
+        const loadAppts = async () => {
+            try {
+                allAppts = await api.getDoctorAppointments();
+                document.getElementById('s-total').textContent = allAppts.length;
+                document.getElementById('s-pend').textContent = allAppts.filter(x => x.status === 'pending').length;
+                document.getElementById('s-conf').textContent = allAppts.filter(x => x.status === 'confirmed').length;
+                document.getElementById('b-appt').textContent = allAppts.filter(x => x.status === 'pending').length;
+                renderAppts(allAppts);
+            } catch { toast('Could not load appointments', 'err'); }
+        };
+
+        const filterAppts = () => {
+            const s = document.getElementById('f-status').value;
+            renderAppts(s ? allAppts.filter(x => x.status === s) : allAppts);
+        };
+
+        const renderAppts = list => {
+            const tb = document.getElementById('a-tbody');
+            if (!list.length) {
+                tb.innerHTML = `<tr><td colspan="7">
+      <div class="empty"><div class="ei">📅</div>
+      <h3>No Appointments</h3><p>Patient bookings will appear here</p></div>
+    </td></tr>`;
+                return;
+            }
+            tb.innerHTML = list.map(a => `
+    <tr>
+      <td><strong>${a.patientName || 'Patient'}</strong></td>
+      <td>${fmtDate(a.date)}</td>
+      <td>${a.time}</td>
+      <td><span class="badge b-blue">${a.type}</span></td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.problem || ''}">${a.problem || '—'}</td>
+      <td>
+        <span class="badge ${a.status === 'confirmed' ? 'b-green' : a.status === 'cancelled' ? 'b-red' : 'b-amber'}">
+          ${a.status}
+        </span>
+      </td>
+      <td style="display:flex;gap:6px;">
+        ${a.status === 'pending'
+                    ? `<button class="btn btn-success btn-sm" onclick="chgStatus('${a._id}','confirmed')">✓ Confirm</button>
+             <button class="btn btn-danger btn-sm"  onclick="chgStatus('${a._id}','cancelled')">✗ Cancel</button>`
+                    : `<span style="font-size:13px;color:var(--muted)">${a.status}</span>`}
+      </td>
+    </tr>`).join('');
+        };
+
+        const chgStatus = async (id, status) => {
+            try {
+                await api.updateAppointmentStatus(id, status);
+                toast(`Appointment ${status}!`, 'ok');
+                loadAppts();
+            } catch { toast('Failed to update', 'err'); }
+        };
+
+        /* ── MESSAGES ── */
+        const loadMsgs = async () => {
+            const el = document.getElementById('msg-cards');
+            try {
+                const msgs = await api.getDoctorMessages();
+                document.getElementById('s-msg').textContent = msgs.length;
+                document.getElementById('b-msg').textContent = msgs.length;
+                document.getElementById('msg-count').textContent = `${msgs.length} messages`;
+
+                if (!msgs.length) {
+                    el.innerHTML = `<div class="empty"><div class="ei">💬</div>
+        <h3>No Messages Yet</h3><p>Patient messages will appear here</p></div>`;
+                    return;
+                }
+
+                el.innerHTML = msgs.map(m => `
+      <div class="msg-card">
+        <div class="msg-card-top">
+          <div class="msg-sender">
+            <div class="msg-av">${m.senderName.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="msg-name">${m.senderName}</div>
+              <div class="msg-contact">
+                <a href="mailto:${m.senderEmail}" style="color:var(--blue)">${m.senderEmail}</a>
+                ${m.senderPhone ? ' · ' + m.senderPhone : ''}
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+            <span class="badge ${m.isAIReply ? 'b-blue' : 'b-amber'}">
+              ${m.isAIReply ? '🤖 AI Replied' : '⏳ Awaiting Reply'}
+            </span>
+            <span style="font-size:11px;color:var(--muted);">
+              ${new Date(m.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+          </div>
+        </div>
+        <div class="msg-problem">${m.problem}</div>
+        ${m.isAIReply && m.reply ? `
+          <div style="margin-top:10px;padding:10px 14px;background:#eff6ff;border-radius:var(--r-sm);border-left:3px solid var(--blue);">
+            <span style="font-size:11px;font-weight:700;color:var(--blue);display:block;margin-bottom:4px;">🤖 AI Reply Sent:</span>
+            <span style="font-size:13px;color:var(--text);">${m.reply}</span>
+          </div>` : ''}
+      </div>`).join('');
+            } catch { toast('Could not load messages', 'err'); }
+        };
+
+        /* ── PROFILE ── */
+        const saveProfile = async () => {
+            const u = getUser();
+            const fd = new FormData();
+            const msg = document.getElementById('pmsg');
+            const btn = event.target;
+
+            fd.append('name', u.name);
+            fd.append('specialization', document.getElementById('spec').value);
+            fd.append('city', document.getElementById('city').value);
+            fd.append('consultationType', document.getElementById('ctype').value);
+            fd.append('experience', document.getElementById('exp').value || 0);
+            fd.append('phone', document.getElementById('phone').value);
+            fd.append('bio', document.getElementById('bio').value);
+
+            const pic = document.getElementById('pic').files[0];
+            if (pic) fd.append('profilePic', pic);
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            try {
+                const r = await api.createProfile(fd);
+                if (r._id) {
+                    msg.innerHTML = '<div class="alert a-ok">✅ Profile updated successfully!</div>';
+                    toast('Profile saved!', 'ok');
+                } else {
+                    msg.innerHTML = `<div class="alert a-err">❌ ${r.message || 'Update failed'}</div>`;
+                }
+            } catch {
+                msg.innerHTML = '<div class="alert a-err">❌ Server error</div>';
+            }
+
+            btn.disabled = false;
+            btn.textContent = '💾 Save Changes';
+        };
+    </script>
+</body>
+
+</html>

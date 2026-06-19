@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign In — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+
+    <div class="auth-layout">
+
+        <!-- LEFT -->
+        <div class="auth-left">
+            <div class="auth-left-inner">
+                <a href="../index.html"
+                    style="display:flex;align-items:center;gap:10px;color:white;margin-bottom:52px;">
+                    <div
+                        style="width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        🏥</div>
+                    <span style="font-size:18px;font-weight:800;">SmartDoctor</span>
+                </a>
+                <h2>Welcome back to smarter healthcare</h2>
+                <p>Log in to book appointments, chat with doctors, and track your health journey — all in one place.</p>
+                <div class="auth-bullets">
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div>
+                        <span>AI-powered doctor matching in seconds</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div>
+                        <span>Book online or physical appointments</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div>
+                        <span>24/7 AI chatbot support</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div>
+                        <span>Instant email notifications</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="auth-right">
+            <div class="auth-form">
+                <h2>Sign In</h2>
+                <p class="sub">Enter your credentials to continue</p>
+
+                <div id="msg"></div>
+
+                <div class="fgroup">
+                    <label>Email Address</label>
+                    <input class="finput" type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+                </div>
+
+                <div class="fgroup">
+                    <label>Password</label>
+                    <input class="finput" type="password" id="pass" placeholder="Your password"
+                        autocomplete="current-password" />
+                </div>
+
+                <button class="btn btn-primary btn-block btn-lg" id="btn" onclick="doLogin()" style="margin-top:4px;">
+                    Sign In →
+                </button>
+
+                <div class="flink" style="margin-top:20px;">
+                    Don't have an account? <a href="register.html">Create one free →</a>
+                </div>
+
+                <div style="text-align:center;margin-top:16px;">
+                    <a href="../index.html" style="font-size:13px;color:var(--muted);">← Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        // Redirect if already logged in
+        window.onload = () => {
+            const u = getUser();
+            if (u && getToken()) {
+                window.location.href = u.role === 'doctor'
+                    ? 'doctor-dashboard.html'
+                    : 'patient-dashboard.html';
+            }
+        };
+
+        const doLogin = async () => {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById('btn');
+
+            if (!email || !pass) {
+                msg.innerHTML = '<div class="alert a-err">⚠️ Please fill in all fields.</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Signing in…';
+            msg.innerHTML = '';
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: pass })
+                });
+
+                const data = await res.json();
+                console.log('Login response:', data);
+
+                if (data.token && data.user) {
+                    // Save token and user to localStorage
+                    localStorage.setItem('sdc_token', data.token);
+                    localStorage.setItem('sdc_user', JSON.stringify(data.user));
+
+                    // Show success toast
+                    showToast(`Welcome back, ${data.user.name}! 👋`, 'success');
+
+                    // Redirect based on role
+                    setTimeout(() => {
+                        window.location.href = data.user.role === 'doctor'
+                            ? 'doctor-dashboard.html'
+                            : 'patient-dashboard.html';
+                    }, 600);
+
+                } else {
+                    msg.innerHTML = `<div class="alert a-err">❌ ${data.message || 'Login failed. Check your credentials.'}</div>`;
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In →';
+                }
+
+            } catch (err) {
+                console.error('Login error:', err);
+                msg.innerHTML = '<div class="alert a-err">❌ Cannot connect to server. Make sure backend is running.</div>';
+                btn.disabled = false;
+                btn.textContent = 'Sign In →';
+            }
+        };
+
+        // Enter key support
+        document.addEventListener('keypress', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+    </script>
+
+</body>
+
+</html>

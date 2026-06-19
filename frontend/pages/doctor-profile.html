@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Doctor Profile — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        .prof-body {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 48px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow-xs);
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .irow {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f7ff;
+        }
+
+        .irow:last-child {
+            border: none;
+        }
+
+        .iico {
+            width: 34px;
+            height: 34px;
+            background: var(--off);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .ilbl {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ival {
+            font-size: 14px;
+            color: var(--navy);
+            font-weight: 500;
+        }
+
+        .quick-book {
+            background: var(--navy);
+            border-radius: var(--r);
+            padding: 24px;
+            color: white;
+            margin-bottom: 18px;
+        }
+
+        .quick-book h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .quick-book p {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-bottom: 18px;
+        }
+
+        .rat-stars {
+            display: flex;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .rat-stars span {
+            font-size: 26px;
+            color: var(--border);
+            transition: color 0.15s;
+        }
+
+        .rat-stars span.on,
+        .rat-stars span:hover {
+            color: #f59e0b;
+        }
+
+        @media(max-width:900px) {
+            .prof-body {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-mark">🏥</div>SmartDoctor
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="search-results.html?q=&city=">Find Doctors</a></li>
+            <li id="nav-patient" style="display:none"><a href="patient-dashboard.html">Dashboard</a></li>
+            <li id="nav-doctor" style="display:none"><a href="doctor-dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="nav-actions">
+            <li id="nav-login" style="list-style:none"><a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+            </li>
+            <li id="nav-register" style="list-style:none"><a href="register.html"
+                    class="btn btn-primary btn-sm">Register</a></li>
+            <li id="nav-logout" style="display:none;list-style:none"><a href="#" onclick="logout()"
+                    class="btn btn-ghost btn-sm">Logout</a></li>
+            <li id="nav-user" style="list-style:none"></li>
+        </div>
+    </nav>
+
+    <div class="profile-hero" id="phero">
+        <div class="loader">
+            <div class="spin" style="border-top-color:var(--cyan)"></div>
+        </div>
+    </div>
+
+    <div class="prof-body" id="pbody" style="display:none">
+
+        <!-- MAIN -->
+        <div>
+            <div class="info-card" id="about-card" style="display:none">
+                <h3>About</h3>
+                <p id="bio-text" style="font-size:14px;color:var(--muted);line-height:1.8;"></p>
+            </div>
+
+            <div class="info-card">
+                <h3>Professional Details</h3>
+                <div class="irow">
+                    <div class="iico">🎓</div>
+                    <div>
+                        <div class="ilbl">Specialization</div>
+                        <div class="ival" id="d-spec">—</div>
+                    </div>
+                </div>
+                <div class="irow">
+                    <div class="iico">📍</div>
+                    <div>
+                        <div class="ilbl">City</div>
+                        <div class="ival" id="d-city">—</div>
+                    </div>
+                </div>
+                <div class="irow">
+                    <div class="iico">🏥</div>
+                    <div>
+                        <div class="ilbl">Consultation</div>
+                        <div class="ival" id="d-type">—</div>
+                    </div>
+                </div>
+                <div class="irow">
+                    <div class="iico">⏳</div>
+                    <div>
+                        <div class="ilbl">Experience</div>
+                        <div class="ival" id="d-exp">—</div>
+                    </div>
+                </div>
+                <div class="irow" id="phone-row" style="display:none">
+                    <div class="iico">📞</div>
+                    <div>
+                        <div class="ilbl">Phone</div>
+                        <div class="ival" id="d-phone">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAT -->
+            <div class="info-card" style="padding:0;overflow:hidden;">
+                <div class="chat-box">
+                    <div class="chat-hd">
+                        <img class="chat-hd-av" id="chat-av" src="" alt="" />
+                        <div>
+                            <div class="chat-hd-name" id="chat-name">Doctor</div>
+                            <div class="chat-hd-status"><span class="online-dot" id="chat-dot"></span><span
+                                    id="chat-status">Loading…</span></div>
+                        </div>
+                    </div>
+                    <div class="chat-fields">
+                        <input type="text" id="sname" placeholder="Your Name *" />
+                        <input type="email" id="semail" placeholder="Your Email *" />
+                        <input type="text" id="sphone" placeholder="Phone (optional)" />
+                    </div>
+                    <div class="chat-msgs" id="chat-msgs">
+                        <div class="msg b">
+                            <div class="msg-bubble">👋 Hi! Enter your details above and describe your problem below.
+                            </div>
+                            <div class="msg-time">Now</div>
+                        </div>
+                    </div>
+                    <div class="chat-inp">
+                        <input type="text" id="chat-in" placeholder="Describe your symptoms…"
+                            onkeypress="if(event.key==='Enter')send()" />
+                        <button class="btn btn-primary" onclick="send()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+            <div class="quick-book">
+                <h3>📅 Book Appointment</h3>
+                <p>Schedule online or in-person consultation</p>
+                <a id="book-lnk" href="#" class="btn btn-cyan btn-block btn-lg">Book Now →</a>
+            </div>
+
+            <div class="info-card" style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0;overflow:hidden;">
+                <div style="padding:20px;text-align:center;border-right:1px solid var(--border);">
+                    <div style="font-family:var(--font-serif);font-size:30px;color:var(--navy);" id="s-rating">0</div>
+                    <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Rating</div>
+                    <div style="color:#f59e0b;font-size:13px;" id="s-stars"></div>
+                </div>
+                <div style="padding:20px;text-align:center;">
+                    <div style="font-family:var(--font-serif);font-size:30px;color:var(--navy);" id="s-exp">0</div>
+                    <div style="font-size:11px;color:var(--muted);">Yrs Experience</div>
+                </div>
+            </div>
+
+            <div class="info-card" style="margin-top:18px;">
+                <h3>⭐ Rate This Doctor</h3>
+                <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Had a consultation? Leave a rating.</p>
+                <div class="rat-stars" id="rat">
+                    <span onclick="rate(1)">★</span><span onclick="rate(2)">★</span>
+                    <span onclick="rate(3)">★</span><span onclick="rate(4)">★</span><span onclick="rate(5)">★</span>
+                </div>
+                <div id="rat-msg" style="margin-top:10px;font-size:13px;color:var(--muted);"></div>
+            </div>
+
+            <div class="info-card" style="margin-top:18px;">
+                <h3>Share Profile</h3>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn btn-ghost btn-sm" onclick="copyLink()">🔗 Copy Link</button>
+                    <a class="btn btn-ghost btn-sm" id="wa" href="#" target="_blank">💬 WhatsApp</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let did = null;
+        window.onload = async () => {
+            setupNav();
+            did = new URLSearchParams(window.location.search).get('id');
+            if (!did) { document.getElementById('phero').innerHTML = '<div class="empty"><div class="ei">❌</div><h3>Doctor not found</h3></div>'; return; }
+            try {
+                const d = await api.getDoctorById(did);
+                renderHero(d); renderDetails(d);
+                document.getElementById('pbody').style.display = 'grid';
+            } catch { document.getElementById('phero').innerHTML = '<div class="empty"><div class="ei">⚠️</div><h3>Error loading doctor</h3></div>'; }
+        };
+        const renderHero = d => {
+            document.title = `Dr. ${d.name} — SmartDoctor`;
+            document.getElementById('phero').innerHTML = `
+    <div class="profile-inner">
+      <img class="profile-img" src="${ava(d.name, d.profilePic)}" alt="${d.name}"/>
+      <div>
+        <div class="profile-name">Dr. ${d.name}</div>
+        <div class="profile-spec">${d.specialization}</div>
+        <div class="profile-tags">
+          <span class="profile-tag">📍 ${d.city}</span>
+          <span class="profile-tag">🏥 ${d.consultationType}</span>
+          <span class="profile-tag">⏳ ${d.experience} Yrs</span>
+          <span class="profile-tag" style="background:${d.isAvailable ? 'rgba(0,229,192,0.15)' : 'rgba(255,87,87,0.15)'};">
+            ${d.isAvailable ? '🟢 Available Now' : '🔴 Currently Busy'}
+          </span>
+        </div>
+        <div style="color:#f59e0b;font-size:18px;margin-top:10px;">${stars(d.rating)}</div>
+      </div>
+    </div>`;
+        };
+        const renderDetails = d => {
+            if (d.bio) { document.getElementById('about-card').style.display = 'block'; document.getElementById('bio-text').textContent = d.bio; }
+            document.getElementById('d-spec').textContent = d.specialization;
+            document.getElementById('d-city').textContent = d.city;
+            document.getElementById('d-type').textContent = d.consultationType + ' Consultation';
+            document.getElementById('d-exp').textContent = d.experience + ' Years';
+            document.getElementById('s-rating').textContent = d.rating || 0;
+            document.getElementById('s-stars').textContent = stars(d.rating);
+            document.getElementById('s-exp').textContent = d.experience;
+            document.getElementById('book-lnk').href = `appointment.html?id=${d._id}`;
+            document.getElementById('wa').href = `https://wa.me/?text=${encodeURIComponent('Check out Dr. ' + d.name + ' on SmartDoctor: ' + window.location.href)}`;
+            if (d.phone) { document.getElementById('phone-row').style.display = 'flex'; document.getElementById('d-phone').textContent = d.phone; }
+            document.getElementById('chat-av').src = ava(d.name, d.profilePic);
+            document.getElementById('chat-name').textContent = 'Dr. ' + d.name;
+            document.getElementById('chat-status').textContent = d.isAvailable ? 'Online — will reply directly' : 'Busy — AI will auto-reply';
+            document.getElementById('chat-dot').style.background = d.isAvailable ? 'var(--mint)' : '#f59e0b';
+        };
+        const addMsg = (txt, type) => {
+            const m = document.getElementById('chat-msgs');
+            m.innerHTML += `<div class="msg ${type}"><div class="msg-bubble">${txt}</div><div class="msg-time">${nowTime()}</div></div>`;
+            m.scrollTop = m.scrollHeight;
+        };
+        const send = async () => {
+            const prob = document.getElementById('chat-in').value.trim();
+            const nm = document.getElementById('sname').value.trim();
+            const em = document.getElementById('semail').value.trim();
+            const ph = document.getElementById('sphone').value.trim();
+            if (!prob || !nm || !em) { toast('Please enter your name, email and message.', 'err'); return; }
+            addMsg(prob, 'u'); document.getElementById('chat-in').value = '';
+            try {
+                const r = await api.sendMessage({ doctorId: did, senderName: nm, senderEmail: em, senderPhone: ph, problem: prob });
+                setTimeout(() => addMsg(r.aiReply ? '🤖 ' + r.aiReply : '✅ Message sent! Doctor will respond soon.', 'b'), 900);
+            } catch { setTimeout(() => addMsg('❌ Error sending. Try again.', 'b'), 600); }
+        };
+        const rate = n => {
+            document.querySelectorAll('#rat span').forEach((s, i) => s.classList.toggle('on', i < n));
+            document.getElementById('rat-msg').textContent = ['', '⭐ Poor', '⭐⭐ Fair', '⭐⭐⭐ Good', '⭐⭐⭐⭐ Very Good', '⭐⭐⭐⭐⭐ Excellent!'][n];
+            toast(`Rated ${n}/5 stars!`, 'ok');
+        };
+        const copyLink = () => navigator.clipboard.writeText(window.location.href).then(() => toast('Link copied!', 'ok'));
+    </script>
+</body>
+
+</html>

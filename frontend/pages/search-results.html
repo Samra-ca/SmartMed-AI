@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Search Results — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        .results-layout {
+            display: grid;
+            grid-template-columns: 264px 1fr;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .filter-panel {
+            background: white;
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            padding: 22px;
+            height: fit-content;
+            position: sticky;
+            top: 82px;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .filter-panel h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fg {
+            margin-bottom: 16px;
+        }
+
+        .fg label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 7px;
+        }
+
+        .fg select,
+        .fg input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            outline: none;
+            transition: var(--t);
+            font-family: var(--font);
+            background: #fafbff;
+        }
+
+        .fg select:focus,
+        .fg input:focus {
+            border-color: var(--blue);
+        }
+
+        .sort-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sort-row .count {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .sort-row select {
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            font-size: 13px;
+            outline: none;
+            font-family: var(--font);
+            cursor: pointer;
+            background: white;
+        }
+
+        @media(max-width:768px) {
+            .results-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-panel {
+                position: static;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-mark">🏥</div>SmartDoctor
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li id="nav-patient" style="display:none"><a href="patient-dashboard.html">Dashboard</a></li>
+            <li id="nav-doctor" style="display:none"><a href="doctor-dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="nav-actions">
+            <li id="nav-login" style="list-style:none"><a href="login.html" class="btn btn-ghost btn-sm">Sign In</a>
+            </li>
+            <li id="nav-register" style="list-style:none"><a href="register.html"
+                    class="btn btn-primary btn-sm">Register</a></li>
+            <li id="nav-logout" style="display:none;list-style:none"><a href="#" onclick="logout()"
+                    class="btn btn-ghost btn-sm">Logout</a></li>
+            <li id="nav-user" style="list-style:none"></li>
+        </div>
+    </nav>
+
+    <div style="background:var(--navy);padding:22px 48px;">
+        <div class="search-wrap" style="max-width:700px;margin:0 auto;">
+            <input type="text" id="q" placeholder="Search symptoms or specialization…" />
+            <div class="search-sep"></div>
+            <select id="city">
+                <option value="">All Cities</option>
+                <option>Lahore</option>
+                <option>Karachi</option>
+                <option>Islamabad</option>
+                <option>Rawalpindi</option>
+                <option>Faisalabad</option>
+                <option>Multan</option>
+                <option>Peshawar</option>
+            </select>
+            <button class="search-btn" onclick="doSearch()">🔍 Search</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="results-layout">
+
+            <!-- Filters -->
+            <div class="filter-panel">
+                <h3>🎛 Filters</h3>
+                <div class="fg"><label>Specialization</label>
+                    <select id="f-spec" onchange="apply()">
+                        <option value="">All</option>
+                        <option>General Physician</option>
+                        <option>Cardiologist</option>
+                        <option>Dermatologist</option>
+                        <option>Orthopedic</option>
+                        <option>Pediatrician</option>
+                        <option>Psychiatrist</option>
+                        <option>Gynecologist</option>
+                        <option>Neurologist</option>
+                        <option>Ophthalmologist</option>
+                        <option>ENT Specialist</option>
+                        <option>Dentist</option>
+                        <option>Gastroenterologist</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Consultation Type</label>
+                    <select id="f-type" onchange="apply()">
+                        <option value="">Any</option>
+                        <option value="Online">Online</option>
+                        <option value="Physical">Physical</option>
+                        <option value="Both">Both</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Availability</label>
+                    <select id="f-avail" onchange="apply()">
+                        <option value="">Any</option>
+                        <option value="y">Available Now</option>
+                        <option value="n">Busy</option>
+                    </select>
+                </div>
+                <div class="fg"><label>Min Experience (yrs)</label>
+                    <input type="number" id="f-exp" min="0" placeholder="e.g. 3" oninput="apply()" />
+                </div>
+                <button class="btn btn-ghost btn-block btn-sm" onclick="clearF()">Clear Filters</button>
+            </div>
+
+            <!-- Results -->
+            <div>
+                <div class="sort-row">
+                    <span class="count" id="count">Searching…</span>
+                    <select id="sort" onchange="apply()">
+                        <option value="rating">Highest Rated</option>
+                        <option value="exp">Most Experienced</option>
+                        <option value="avail">Available First</option>
+                    </select>
+                </div>
+                <div class="grid-3" id="results">
+                    <div class="loader" style="grid-column:1/-1">
+                        <div class="spin"></div>Finding best doctors…
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let all = [];
+        window.onload = async () => {
+            setupNav();
+            const p = new URLSearchParams(window.location.search);
+            const q = p.get('q') || '', city = p.get('city') || '';
+            document.getElementById('q').value = q;
+            document.getElementById('city').value = city;
+            try { all = await api.searchDoctors(q, city); apply(); }
+            catch { document.getElementById('results').innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ei">⚠️</div><h3>Backend not running</h3><p>Start your backend on port 5000</p></div>`; }
+        };
+        const apply = () => {
+            let d = [...all];
+            const spec = document.getElementById('f-spec').value;
+            const type = document.getElementById('f-type').value;
+            const avail = document.getElementById('f-avail').value;
+            const exp = parseInt(document.getElementById('f-exp').value) || 0;
+            const sort = document.getElementById('sort').value;
+            if (spec) d = d.filter(x => x.specialization === spec);
+            if (type) d = d.filter(x => x.consultationType === type || x.consultationType === 'Both');
+            if (avail === 'y') d = d.filter(x => x.isAvailable);
+            if (avail === 'n') d = d.filter(x => !x.isAvailable);
+            if (exp) d = d.filter(x => x.experience >= exp);
+            if (sort === 'rating') d.sort((a, b) => b.rating - a.rating);
+            if (sort === 'exp') d.sort((a, b) => b.experience - a.experience);
+            if (sort === 'avail') d.sort((a, b) => b.isAvailable - a.isAvailable);
+            render(d);
+        };
+        const clearF = () => { ['f-spec', 'f-type', 'f-avail', 'f-exp'].forEach(id => { const el = document.getElementById(id); el.value = ''; }); apply(); };
+        const render = d => {
+            const c = document.getElementById('results');
+            document.getElementById('count').textContent = `${d.length} doctor${d.length !== 1 ? 's' : ''} found`;
+            if (!d.length) { c.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ei">🔍</div><h3>No Doctors Found</h3><p>Try different keywords or clear filters</p><button class="btn btn-outline" onclick="clearF()">Clear Filters</button></div>`; return; }
+            c.innerHTML = d.map(x => `
+    <div class="card doc-card">
+      <div class="doc-card-top">
+        <img class="doc-avatar" src="${ava(x.name, x.profilePic)}" alt="${x.name}"/>
+        <div>
+          <div class="doc-info-name">Dr. ${x.name}</div>
+          <div class="doc-info-spec">${x.specialization}</div>
+          <div class="doc-stars">${stars(x.rating)}</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="doc-meta-row">📍 ${x.city}</div>
+        <div class="doc-meta-row">🏥 ${x.consultationType}</div>
+        <div class="doc-meta-row">⏳ ${x.experience} yrs experience</div>
+        ${x.phone ? `<div class="doc-meta-row">📞 ${x.phone}</div>` : ''}
+      </div>
+      ${x.bio ? `<p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;">${x.bio.slice(0, 90)}${x.bio.length > 90 ? '…' : ''}</p>` : ''}
+      <div class="doc-tags">
+        <span class="badge ${x.isAvailable ? 'b-green' : 'b-red'}"><span class="dot"></span>${x.isAvailable ? 'Available' : 'Busy'}</span>
+        <span class="badge b-cyan">${x.consultationType}</span>
+      </div>
+      <div class="doc-card-actions">
+        <a href="doctor-profile.html?id=${x._id}" class="btn btn-outline btn-sm" style="flex:1;text-align:center;">View Profile</a>
+        <a href="appointment.html?id=${x._id}"    class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Book Now</a>
+      </div>
+    </div>`).join('');
+        };
+        const doSearch = () => { const q = document.getElementById('q').value.trim(), city = document.getElementById('city').value; window.location.href = `search-results.html?q=${encodeURIComponent(q)}&city=${encodeURIComponent(city)}`; };
+        document.addEventListener('keypress', e => { if (e.key === 'Enter' && document.activeElement.id === 'q') doSearch(); });
+    </script>
+</body>
+
+</html>

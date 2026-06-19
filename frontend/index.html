@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SmartDoctor — Find Your Doctor Instantly</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+    <nav class="nav">
+        <a href="index.html" class="nav-logo">
+            <div class="nav-logo-mark">🏥</div>SmartDoctor
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="pages/search-results.html?q=&city=">Find Doctors</a></li>
+            <li id="nav-patient" style="display:none"><a href="pages/patient-dashboard.html">Dashboard</a></li>
+            <li id="nav-doctor" style="display:none"><a href="pages/doctor-dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="nav-actions">
+            <li id="nav-login" style="list-style:none"><a href="pages/login.html" class="btn btn-ghost btn-sm">Sign
+                    In</a></li>
+            <li id="nav-register" style="list-style:none"><a href="pages/register.html"
+                    class="btn btn-primary btn-sm">Get Started</a></li>
+            <li id="nav-logout" style="display:none;list-style:none"><a href="#" onclick="logout()"
+                    class="btn btn-ghost btn-sm">Logout</a></li>
+            <li id="nav-user" style="list-style:none"></li>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-inner">
+            <div class="hero-pill"><span class="hero-pill-dot"></span>AI-Powered · Verified Doctors · 24/7 Support</div>
+            <h1>Find the Right Doctor,<br /><em>Instantly & Effortlessly</em></h1>
+            <p class="hero-sub">Describe your symptoms and our AI matches you with the best specialist in your city.
+                Book in seconds.</p>
+
+            <div class="search-wrap">
+                <input type="text" id="q" placeholder="e.g. back pain, skin rash, anxiety, fever…" />
+                <div class="search-sep"></div>
+                <select id="city">
+                    <option value="">All Cities</option>
+                    <option>Lahore</option>
+                    <option>Karachi</option>
+                    <option>Islamabad</option>
+                    <option>Rawalpindi</option>
+                    <option>Faisalabad</option>
+                    <option>Multan</option>
+                    <option>Peshawar</option>
+                </select>
+                <button class="search-btn" onclick="goSearch()">🔍 Search</button>
+            </div>
+
+            <div class="search-tags">
+                <span class="search-tag" onclick="quick('back pain')">Back Pain</span>
+                <span class="search-tag" onclick="quick('skin rash')">Skin Rash</span>
+                <span class="search-tag" onclick="quick('heart')">Heart</span>
+                <span class="search-tag" onclick="quick('anxiety')">Anxiety</span>
+                <span class="search-tag" onclick="quick('fever')">Fever</span>
+                <span class="search-tag" onclick="quick('teeth')">Dental</span>
+                <span class="search-tag" onclick="quick('eye')">Eye Care</span>
+            </div>
+
+            <div class="hero-numbers">
+                <div class="hero-num">
+                    <div class="val">500+</div>
+                    <div class="lbl">Verified Doctors</div>
+                </div>
+                <div class="hero-num">
+                    <div class="val">12,000+</div>
+                    <div class="lbl">Patients Helped</div>
+                </div>
+                <div class="hero-num">
+                    <div class="val">98%</div>
+                    <div class="lbl">Satisfaction Rate</div>
+                </div>
+                <div class="hero-num">
+                    <div class="val">24/7</div>
+                    <div class="lbl">AI Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <div class="trust-bar">
+        <div class="trust-item"><span class="ti">✅</span> PMDC Verified</div>
+        <div class="trust-item"><span class="ti">🔒</span> Secure & Private</div>
+        <div class="trust-item"><span class="ti">🤖</span> AI-Powered Matching</div>
+        <div class="trust-item"><span class="ti">⚡</span> Instant Booking</div>
+        <div class="trust-item"><span class="ti">📧</span> Email Notifications</div>
+        <div class="trust-item"><span class="ti">💬</span> 24/7 Chat Support</div>
+    </div>
+
+    <!-- SPECIALTIES -->
+    <section class="section" style="background:var(--off)">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <div class="section-eyebrow">Browse by Specialty</div>
+                    <div class="section-h">Find by Specialization</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;">
+                <a class="spec-chip" href="pages/search-results.html?q=Cardiologist&city="><span
+                        class="ico">❤️</span><span class="lbl">Cardiologist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Dermatologist&city="><span
+                        class="ico">🧴</span><span class="lbl">Dermatologist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Orthopedic&city="><span
+                        class="ico">🦴</span><span class="lbl">Orthopedic</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Pediatrician&city="><span
+                        class="ico">👶</span><span class="lbl">Pediatrician</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Psychiatrist&city="><span
+                        class="ico">🧠</span><span class="lbl">Psychiatrist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Gynecologist&city="><span
+                        class="ico">🌸</span><span class="lbl">Gynecologist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Dentist&city="><span class="ico">🦷</span><span
+                        class="lbl">Dentist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=ENT Specialist&city="><span
+                        class="ico">👂</span><span class="lbl">ENT Specialist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Neurologist&city="><span
+                        class="ico">⚡</span><span class="lbl">Neurologist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Ophthalmologist&city="><span
+                        class="ico">👁️</span><span class="lbl">Eye Specialist</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=General Physician&city="><span
+                        class="ico">🩺</span><span class="lbl">General Physician</span></a>
+                <a class="spec-chip" href="pages/search-results.html?q=Gastroenterologist&city="><span
+                        class="ico">🫁</span><span class="lbl">Gastro</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" style="background:white">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <div class="section-eyebrow">Simple Process</div>
+                    <div class="section-h">How It Works</div>
+                    <div class="section-sub">Get matched to the right doctor in 3 easy steps</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
+                <div class="feat-card">
+                    <div class="feat-icon ic-blue">🔍</div>
+                    <h3>1. Describe Symptoms</h3>
+                    <p>Type what you're feeling. Our AI maps symptoms to the right specialist automatically — no
+                        guessing needed.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-cyan">👨‍⚕️</div>
+                    <h3>2. Choose a Doctor</h3>
+                    <p>Browse verified doctors filtered by city, experience, rating, and consultation type. Read bios
+                        and reviews.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-mint">📅</div>
+                    <h3>3. Book Instantly</h3>
+                    <p>Pick your time slot and confirm your appointment online or in-person in seconds. Get instant
+                        confirmation.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-amber">💬</div>
+                    <h3>4. Chat & Follow Up</h3>
+                    <p>Message your doctor directly. AI chatbot auto-replies when doctor is offline and sends them an
+                        email alert.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED DOCTORS -->
+    <section class="section" style="background:var(--off)">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <div class="section-eyebrow">Top Rated</div>
+                    <div class="section-h">Featured Doctors</div>
+                </div>
+                <a href="pages/search-results.html?q=&city=" class="btn btn-outline">View All →</a>
+            </div>
+            <div class="grid-3" id="feat-docs">
+                <div class="loader" style="grid-column:1/-1">
+                    <div class="spin"></div>Loading doctors…
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" style="background:white">
+        <div class="wrap">
+            <div class="section-head">
+                <div>
+                    <div class="section-eyebrow">Why SmartDoctor</div>
+                    <div class="section-h">Built for Better Healthcare</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;">
+                <div class="feat-card">
+                    <div class="feat-icon ic-blue">🤖</div>
+                    <h3>AI Symptom Matching</h3>
+                    <p>Intelligent keyword engine maps your symptoms to the right specialist instantly, cutting out the
+                        guesswork.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-cyan">💬</div>
+                    <h3>Smart Chatbot</h3>
+                    <p>When your doctor is offline, our AI chatbot collects your info and fires an email notification to
+                        the doctor.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-mint">📧</div>
+                    <h3>Email Alerts</h3>
+                    <p>Doctors get instant email alerts for every new patient message — no inquiry ever goes unanswered.
+                    </p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon ic-amber">🏥</div>
+                    <h3>Online & Physical</h3>
+                    <p>Choose between online video consultations or physical clinic visits — whatever works best for
+                        you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-band">
+        <h2>Ready to Find Your Doctor?</h2>
+        <p>Join thousands of patients who found the right specialist through SmartDoctor</p>
+        <div class="cta-btns">
+            <a href="pages/register.html" class="btn btn-cyan btn-xl">Get Started Free →</a>
+            <a href="pages/search-results.html?q=&city=" class="btn btn-xl"
+                style="background:rgba(255,255,255,0.1);color:white;border:1.5px solid rgba(255,255,255,0.25);">Browse
+                Doctors</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="foot-grid">
+            <div class="foot-brand">
+                <div class="logo"><span>🏥</span>SmartDoctor</div>
+                <p>Pakistan's most trusted AI-powered doctor matching platform. Find verified specialists near you in
+                    seconds.</p>
+            </div>
+            <div class="foot-col">
+                <h4>Patients</h4>
+                <ul>
+                    <li><a href="pages/search-results.html?q=&city=">Find Doctors</a></li>
+                    <li><a href="pages/register.html">Register</a></li>
+                    <li><a href="pages/login.html">Login</a></li>
+                    <li><a href="pages/patient-dashboard.html">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="foot-col">
+                <h4>Doctors</h4>
+                <ul>
+                    <li><a href="pages/register.html">Join as Doctor</a></li>
+                    <li><a href="pages/doctor-dashboard.html">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="foot-col">
+                <h4>Specialties</h4>
+                <ul>
+                    <li><a href="pages/search-results.html?q=Cardiologist&city=">Cardiologist</a></li>
+                    <li><a href="pages/search-results.html?q=Dermatologist&city=">Dermatologist</a></li>
+                    <li><a href="pages/search-results.html?q=Orthopedic&city=">Orthopedic</a></li>
+                    <li><a href="pages/search-results.html?q=Psychiatrist&city=">Psychiatrist</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="foot-bottom"><span>© 2025 SmartDoctor Connect</span><span>Made with ❤️ in Pakistan</span></div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        window.onload = () => { setupNav(); loadDocs(); };
+        const loadDocs = async () => {
+            const c = document.getElementById('feat-docs');
+            try {
+                const docs = await api.searchDoctors('', '');
+                if (!docs.length) { c.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ei">👨‍⚕️</div><h3>No Doctors Yet</h3><p>Be the first to register!</p><a href="pages/register.html" class="btn btn-primary">Register as Doctor</a></div>`; return; }
+                c.innerHTML = docs.slice(0, 4).map(docCard).join('');
+            } catch { c.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ei">⚠️</div><h3>Backend not running</h3><p>Start your backend server on port 5000</p></div>`; }
+        };
+        const docCard = d => `
+<div class="card doc-card">
+  <div class="doc-card-top">
+    <img class="doc-avatar" src="${ava(d.name, d.profilePic)}" alt="${d.name}"/>
+    <div>
+      <div class="doc-info-name">Dr. ${d.name}</div>
+      <div class="doc-info-spec">${d.specialization}</div>
+      <div class="doc-stars">${stars(d.rating)}</div>
+    </div>
+  </div>
+  <div class="doc-meta">
+    <div class="doc-meta-row">📍 ${d.city}</div>
+    <div class="doc-meta-row">🏥 ${d.consultationType}</div>
+    <div class="doc-meta-row">⏳ ${d.experience} yrs experience</div>
+  </div>
+  <div class="doc-tags">
+    <span class="badge ${d.isAvailable ? 'b-green' : 'b-red'}"><span class="dot"></span>${d.isAvailable ? 'Available' : 'Busy'}</span>
+    <span class="badge b-cyan">${d.consultationType}</span>
+  </div>
+  <div class="doc-card-actions">
+    <a href="pages/doctor-profile.html?id=${d._id}" class="btn btn-outline btn-sm" style="flex:1;text-align:center;">Profile</a>
+    <a href="pages/appointment.html?id=${d._id}"    class="btn btn-primary btn-sm" style="flex:1;text-align:center;">Book</a>
+  </div>
+</div>`;
+        const goSearch = () => { const q = document.getElementById('q').value.trim(), city = document.getElementById('city').value; window.location.href = `pages/search-results.html?q=${encodeURIComponent(q)}&city=${encodeURIComponent(city)}`; };
+        const quick = t => { document.getElementById('q').value = t; goSearch(); };
+        document.addEventListener('keypress', e => { if (e.key === 'Enter' && document.activeElement.id === 'q') goSearch(); });
+    </script>
+</body>
+
+</html>

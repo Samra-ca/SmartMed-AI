@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Register — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+
+    <div class="auth-layout">
+
+        <!-- LEFT -->
+        <div class="auth-left">
+            <div class="auth-left-inner">
+                <a href="../index.html"
+                    style="display:flex;align-items:center;gap:10px;color:white;margin-bottom:52px;">
+                    <div
+                        style="width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                        🏥</div>
+                    <span style="font-size:18px;font-weight:800;">SmartDoctor</span>
+                </a>
+                <h2>Join Pakistan's smartest healthcare platform</h2>
+                <p>Whether you're a patient or a doctor — we have everything you need in one place.</p>
+                <div class="auth-bullets">
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div><span>Free to register, no credit card needed</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div><span>Instant access to AI-powered booking</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div><span>Secure & confidential data storage</span>
+                    </div>
+                    <div class="auth-bullet">
+                        <div class="auth-bullet-check">✓</div><span>24/7 AI chatbot for patient queries</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="auth-right" style="overflow-y:auto;align-items:flex-start;padding-top:40px;">
+            <div class="auth-form" style="max-width:460px;">
+                <h2>Create Account</h2>
+                <p class="sub">Set up your free account in minutes</p>
+
+                <div class="steps">
+                    <div class="step-d active" id="d1">1</div>
+                    <div class="step-line" id="l1"></div>
+                    <div class="step-d" id="d2">2</div>
+                    <div class="step-line" id="l2"></div>
+                    <div class="step-d" id="d3">3</div>
+                </div>
+
+                <div id="msg"></div>
+
+                <!-- Step 1: Role -->
+                <div class="step-panel on" id="s1">
+                    <p style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:14px;">I am registering as…
+                    </p>
+                    <div class="role-grid">
+                        <div class="role-card on" id="rc-patient" onclick="pickRole('patient')">
+                            <span class="ri">🧑‍💼</span>
+                            <div class="rt">Patient</div>
+                            <div class="rd">Find & book doctors</div>
+                        </div>
+                        <div class="role-card" id="rc-doctor" onclick="pickRole('doctor')">
+                            <span class="ri">👨‍⚕️</span>
+                            <div class="rt">Doctor</div>
+                            <div class="rd">Manage your practice</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="goStep(2)">Continue →</button>
+                </div>
+
+                <!-- Step 2: Basic info -->
+                <div class="step-panel" id="s2">
+                    <div class="fgroup">
+                        <label>Full Name</label>
+                        <input class="finput" type="text" id="name" placeholder="Your full name" />
+                    </div>
+                    <div class="fgroup">
+                        <label>Email</label>
+                        <input class="finput" type="email" id="email" placeholder="you@example.com" />
+                    </div>
+                    <div class="fgroup">
+                        <label>Password</label>
+                        <input class="finput" type="password" id="pass" placeholder="Min. 6 characters" />
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn btn-ghost" onclick="goStep(1)" style="flex:1">← Back</button>
+                        <button class="btn btn-primary" onclick="goStep(3)" style="flex:2">Continue →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-panel" id="s3">
+
+                    <!-- Patient confirm -->
+                    <div id="pat-confirm">
+                        <div style="text-align:center;padding:16px 0 24px;">
+                            <div style="font-size:52px;margin-bottom:14px;">🎉</div>
+                            <h3 style="font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;">You're all
+                                set!</h3>
+                            <p style="color:var(--muted);font-size:15px;">Click below to create your patient account.
+                            </p>
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-ghost" onclick="goStep(2)" style="flex:1">← Back</button>
+                            <button class="btn btn-primary" id="sub-p" onclick="doRegister()" style="flex:2">Create
+                                Account ✓</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor profile -->
+                    <div id="doc-profile" style="display:none;">
+                        <p style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:14px;">Complete your
+                            doctor profile</p>
+                        <div class="frow">
+                            <div class="fgroup">
+                                <label>Specialization</label>
+                                <select class="finput" id="spec">
+                                    <option>General Physician</option>
+                                    <option>Cardiologist</option>
+                                    <option>Dermatologist</option>
+                                    <option>Orthopedic</option>
+                                    <option>Pediatrician</option>
+                                    <option>Psychiatrist</option>
+                                    <option>Gynecologist</option>
+                                    <option>Neurologist</option>
+                                    <option>Ophthalmologist</option>
+                                    <option>ENT Specialist</option>
+                                    <option>Dentist</option>
+                                    <option>Gastroenterologist</option>
+                                    <option>Endocrinologist</option>
+                                    <option>Nephrologist</option>
+                                    <option>Urologist</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>City</label>
+                                <select class="finput" id="city">
+                                    <option>Lahore</option>
+                                    <option>Karachi</option>
+                                    <option>Islamabad</option>
+                                    <option>Rawalpindi</option>
+                                    <option>Faisalabad</option>
+                                    <option>Multan</option>
+                                    <option>Attock</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="frow">
+                            <div class="fgroup">
+                                <label>Consultation Type</label>
+                                <select class="finput" id="ctype">
+                                    <option value="Both">Both</option>
+                                    <option value="Online">Online Only</option>
+                                    <option value="Physical">Physical Only</option>
+                                </select>
+                            </div>
+                            <div class="fgroup">
+                                <label>Experience (yrs)</label>
+                                <input class="finput" type="number" id="exp" placeholder="e.g. 5" min="0" />
+                            </div>
+                        </div>
+                        <div class="fgroup">
+                            <label>Phone</label>
+                            <input class="finput" type="text" id="phone" placeholder="03001234567" />
+                        </div>
+                        <div class="fgroup">
+                            <label>Bio</label>
+                            <textarea class="finput" id="bio"
+                                placeholder="Tell patients about your expertise…"></textarea>
+                        </div>
+                        <div class="fgroup">
+                            <label>Profile Picture (optional)</label>
+                            <input class="finput" type="file" id="pic" accept="image/*" />
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-ghost" onclick="goStep(2)" style="flex:1">← Back</button>
+                            <button class="btn btn-primary" id="sub-d" onclick="doRegister()" style="flex:2">Create
+                                Account ✓</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="flink">Already have an account? <a href="login.html">Sign in →</a></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let role = 'patient';
+        let step = 1;
+
+        const pickRole = r => {
+            role = r;
+            document.getElementById('rc-patient').classList.toggle('on', r === 'patient');
+            document.getElementById('rc-doctor').classList.toggle('on', r === 'doctor');
+        };
+
+        const goStep = n => {
+            if (n === 3) {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const pass = document.getElementById('pass').value;
+                const msg = document.getElementById('msg');
+                if (!name || !email || !pass) {
+                    msg.innerHTML = '<div class="alert a-err">⚠️ Fill all fields.</div>';
+                    return;
+                }
+                if (pass.length < 6) {
+                    msg.innerHTML = '<div class="alert a-err">⚠️ Password min 6 chars.</div>';
+                    return;
+                }
+                msg.innerHTML = '';
+                document.getElementById('pat-confirm').style.display = role === 'patient' ? 'block' : 'none';
+                document.getElementById('doc-profile').style.display = role === 'doctor' ? 'block' : 'none';
+            }
+
+            document.getElementById(`s${step}`).classList.remove('on');
+            step = n;
+            document.getElementById(`s${step}`).classList.add('on');
+
+            [1, 2, 3].forEach(i => {
+                const d = document.getElementById(`d${i}`);
+                d.classList.remove('active', 'done');
+                if (i < step) d.classList.add('done');
+                else if (i === step) d.classList.add('active');
+            });
+
+            document.getElementById('l1').classList.toggle('done', step > 1);
+            document.getElementById('l2').classList.toggle('done', step > 2);
+        };
+
+        const doRegister = async () => {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('pass').value;
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById(role === 'doctor' ? 'sub-d' : 'sub-p');
+
+            btn.disabled = true;
+            btn.textContent = 'Creating…';
+            msg.innerHTML = '';
+
+            try {
+                // Step 1: Register user
+                const res = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await res.json();
+                console.log('Register response:', data);
+
+                if (!data.token) {
+                    msg.innerHTML = `<div class="alert a-err">❌ ${data.message || 'Registration failed'}</div>`;
+                    btn.disabled = false;
+                    btn.textContent = 'Create Account ✓';
+                    return;
+                }
+
+                // Save user to localStorage
+                localStorage.setItem('sdc_token', data.token);
+                localStorage.setItem('sdc_user', JSON.stringify(data.user));
+
+                // Step 2: If doctor, create profile
+                if (role === 'doctor') {
+                    const fd = new FormData();
+                    fd.append('name', name);
+                    fd.append('specialization', document.getElementById('spec').value);
+                    fd.append('city', document.getElementById('city').value);
+                    fd.append('consultationType', document.getElementById('ctype').value);
+                    fd.append('experience', document.getElementById('exp').value || 0);
+                    fd.append('phone', document.getElementById('phone').value);
+                    fd.append('bio', document.getElementById('bio').value);
+
+                    const pic = document.getElementById('pic').files[0];
+                    if (pic) fd.append('profilePic', pic);
+
+                    const profRes = await fetch('http://localhost:5000/api/doctors/profile', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${data.token}` },
+                        body: fd
+                    });
+
+                    const profData = await profRes.json();
+                    console.log('Profile response:', profData);
+
+                    showToast('Welcome, Dr. ' + name + '! 👨‍⚕️', 'success');
+                    setTimeout(() => window.location.href = 'doctor-dashboard.html', 600);
+
+                } else {
+                    showToast('Welcome, ' + name + '! 👋', 'success');
+                    setTimeout(() => window.location.href = 'patient-dashboard.html', 600);
+                }
+
+            } catch (err) {
+                console.error('Register error:', err);
+                msg.innerHTML = '<div class="alert a-err">❌ Server error. Make sure backend is running.</div>';
+                btn.disabled = false;
+                btn.textContent = 'Create Account ✓';
+            }
+        };
+    </script>
+
+</body>
+
+</html>

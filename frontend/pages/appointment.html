@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Book Appointment — SmartDoctor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="../index.html" class="nav-logo">
+            <div class="nav-logo-mark">🏥</div>SmartDoctor
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="patient-dashboard.html">Dashboard</a></li>
+        </ul>
+        <div class="nav-actions">
+            <li id="nav-logout" style="display:none;list-style:none"><a href="#" onclick="logout()"
+                    class="btn btn-ghost btn-sm">Logout</a></li>
+            <li id="nav-user" style="list-style:none"></li>
+        </div>
+    </nav>
+
+    <div style="background:var(--navy);padding:24px 48px;color:white;">
+        <div style="max-width:960px;margin:0 auto;">
+            <div style="font-size:13px;opacity:0.6;margin-bottom:4px;"><a href="../index.html"
+                    style="color:rgba(255,255,255,0.6)">Home</a> → <a href="search-results.html?q=&city="
+                    style="color:rgba(255,255,255,0.6)">Doctors</a> → Book Appointment</div>
+            <h1 style="font-family:var(--font-serif);font-size:26px;font-weight:400;">Book an Appointment</h1>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="book-layout">
+
+            <!-- FORM -->
+            <div>
+                <!-- Doctor info -->
+                <div class="book-card" id="doc-info">
+                    <div class="loader">
+                        <div class="spin"></div>
+                    </div>
+                </div>
+
+                <!-- Date -->
+                <div class="book-card">
+                    <h3>📅 Select Date</h3>
+                    <input type="date" id="date" class="finput" style="max-width:280px;" onchange="updateSummary()" />
+                </div>
+
+                <!-- Time slots -->
+                <div class="book-card">
+                    <h3>🕐 Select Time Slot</h3>
+                    <div class="time-grid">
+                        <div class="tslot" onclick="pickSlot(this,'09:00 AM')">09:00 AM</div>
+                        <div class="tslot" onclick="pickSlot(this,'10:00 AM')">10:00 AM</div>
+                        <div class="tslot" onclick="pickSlot(this,'11:00 AM')">11:00 AM</div>
+                        <div class="tslot" onclick="pickSlot(this,'12:00 PM')">12:00 PM</div>
+                        <div class="tslot" onclick="pickSlot(this,'02:00 PM')">02:00 PM</div>
+                        <div class="tslot" onclick="pickSlot(this,'03:00 PM')">03:00 PM</div>
+                        <div class="tslot" onclick="pickSlot(this,'04:00 PM')">04:00 PM</div>
+                        <div class="tslot" onclick="pickSlot(this,'05:00 PM')">05:00 PM</div>
+                    </div>
+                </div>
+
+                <!-- Type -->
+                <div class="book-card">
+                    <h3>🏥 Consultation Type</h3>
+                    <div class="type-btns">
+                        <div class="type-btn on" id="t-online" onclick="pickType('Online')"><span
+                                class="ti">💻</span><span class="tl">Online</span></div>
+                        <div class="type-btn" id="t-phys" onclick="pickType('Physical')"><span class="ti">🏥</span><span
+                                class="tl">Physical</span></div>
+                    </div>
+                </div>
+
+                <!-- Patient info -->
+                <div class="book-card">
+                    <h3>👤 Your Information</h3>
+                    <div class="fgroup"><label>Full Name</label><input class="finput" type="text" id="pname"
+                            placeholder="Your full name" /></div>
+                    <div class="fgroup" style="margin-bottom:0"><label>Describe Your Problem</label><textarea
+                            class="finput" id="prob" placeholder="Describe your symptoms briefly…"></textarea></div>
+                </div>
+
+                <div id="msg"></div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div>
+                <div
+                    style="background:white;border-radius:var(--r);border:1px solid var(--border);padding:24px;position:sticky;top:82px;box-shadow:var(--shadow-xs);">
+                    <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:20px;">📋 Booking Summary
+                    </h3>
+                    <div class="sum-row"><span class="sl">Doctor</span><span id="sum-doc">—</span></div>
+                    <div class="sum-row"><span class="sl">Specialization</span><span id="sum-spec">—</span></div>
+                    <div class="sum-row"><span class="sl">Date</span><span id="sum-date">Not selected</span></div>
+                    <div class="sum-row"><span class="sl">Time</span><span id="sum-time">Not selected</span></div>
+                    <div class="sum-row"><span class="sl">Type</span><span id="sum-type">Online</span></div>
+                    <div style="margin-top:22px;">
+                        <button class="btn btn-primary btn-block btn-lg" id="book-btn" onclick="doBook()">Confirm
+                            Booking ✓</button>
+                    </div>
+                    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px;">🔒 Your data is
+                        secure & private</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let docId = null, selTime = '', selType = 'Online';
+        window.onload = async () => {
+            if (!requireAuth('patient')) return;
+            setupNav();
+            document.getElementById('date').min = new Date().toISOString().split('T')[0];
+            docId = new URLSearchParams(window.location.search).get('id');
+            if (!docId) return;
+            const u = getUser(); if (u) document.getElementById('pname').value = u.name;
+            try {
+                const d = await api.getDoctorById(docId);
+                document.getElementById('doc-info').innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;">
+        <img src="${ava(d.name, d.profilePic)}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;"/>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:var(--navy)">Dr. ${d.name}</div>
+          <div style="color:var(--blue);font-size:13px;font-weight:600;">${d.specialization}</div>
+          <div style="font-size:13px;color:var(--muted);">📍 ${d.city} &nbsp;|&nbsp; ⏳ ${d.experience} yrs</div>
+        </div>
+        <span class="badge ${d.isAvailable ? 'b-green' : 'b-red'}" style="margin-left:auto;"><span class="dot"></span>${d.isAvailable ? 'Available' : 'Busy'}</span>
+      </div>`;
+                document.getElementById('sum-doc').textContent = 'Dr. ' + d.name;
+                document.getElementById('sum-spec').textContent = d.specialization;
+            } catch { }
+        };
+        const pickSlot = (el, t) => { document.querySelectorAll('.tslot').forEach(s => s.classList.remove('on')); el.classList.add('on'); selTime = t; document.getElementById('sum-time').textContent = t; };
+        const pickType = t => { selType = t; document.getElementById('t-online').classList.toggle('on', t === 'Online'); document.getElementById('t-phys').classList.toggle('on', t === 'Physical'); document.getElementById('sum-type').textContent = t; };
+        const updateSummary = () => { const v = document.getElementById('date').value; document.getElementById('sum-date').textContent = v ? fmtDate(v) : 'Not selected'; };
+        const doBook = async () => {
+            const pname = document.getElementById('pname').value.trim();
+            const date = document.getElementById('date').value;
+            const prob = document.getElementById('prob').value.trim();
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById('book-btn');
+            if (!pname || !date || !selTime || !prob) { msg.innerHTML = '<div class="alert a-err">⚠️ Please fill all fields and select date & time.</div>'; return; }
+            btn.disabled = true; btn.textContent = 'Booking…';
+            try {
+                const r = await api.bookAppointment({ doctorId: docId, patientName: pname, date, time: selTime, type: selType, problem: prob });
+                if (r._id) { msg.innerHTML = '<div class="alert a-ok">✅ Appointment booked! Redirecting…</div>'; setTimeout(() => window.location.href = 'patient-dashboard.html', 1600); }
+                else { msg.innerHTML = `<div class="alert a-err">❌ ${r.message || 'Booking failed'}</div>`; btn.disabled = false; btn.textContent = 'Confirm Booking ✓'; }
+            } catch { msg.innerHTML = '<div class="alert a-err">❌ Server error.</div>'; btn.disabled = false; btn.textContent = 'Confirm Booking ✓'; }
+        };
+    </script>
+</body>
+
+</html>
