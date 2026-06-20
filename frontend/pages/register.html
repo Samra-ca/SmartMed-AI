@@ -252,8 +252,8 @@
             msg.innerHTML = '';
 
             try {
-                // Step 1: Register user
-                const res = await fetch('http://localhost:5000/api/auth/register', {
+                // Step 1: Register user — uses BASE from app.js (auto switches localhost / production)
+                const res = await fetch(`${BASE}/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, email, password, role })
@@ -287,7 +287,7 @@
                     const pic = document.getElementById('pic').files[0];
                     if (pic) fd.append('profilePic', pic);
 
-                    const profRes = await fetch('http://localhost:5000/api/doctors/profile', {
+                    const profRes = await fetch(`${BASE}/doctors/profile`, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${data.token}` },
                         body: fd

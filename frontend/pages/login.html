@@ -108,7 +108,8 @@
             msg.innerHTML = '';
 
             try {
-                const res = await fetch('http://localhost:5000/api/auth/login', {
+                // Uses BASE from app.js (auto switches localhost / production)
+                const res = await fetch(`${BASE}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password: pass })
