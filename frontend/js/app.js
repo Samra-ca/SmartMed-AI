@@ -34,7 +34,7 @@ const requireAuth = (role) => {
 };
 
 /* ── API ── */
-const BASE = 'http://localhost:5000/api';
+const BASE = 'https://samra-fa-smart-med-ai-backend.hf.space/api';
 
 const ah = () => ({
   'Content-Type':  'application/json',
@@ -154,9 +154,9 @@ const setupNav = () => {
 
 /* ── HELPERS ── */
 const ava = (name, pic) => pic
-  ? `http://localhost:5000/uploads/${pic}`
+  ? `https://samra-fa-smart-med-ai-backend.hf.space/uploads/${pic}`
   : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1447E6&color=fff&bold=true&size=200`;
-
+  
 const stars = (r = 0, m = 5) => {
   const n = Math.round(r);
   return '★'.repeat(n) + '☆'.repeat(m - n);
