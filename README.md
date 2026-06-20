@@ -267,8 +267,6 @@ service cloud.firestore {
 
 ## 9. AUTHOR
 
-## 9. AUTHOR
-
 **Name:** Samra Fatima
 **Email:** sminhas1405@gmail.com
 **GitHub:** [github.com/Samra-ca](https://github.com/Samra-ca)
