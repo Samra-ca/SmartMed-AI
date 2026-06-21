@@ -153,10 +153,15 @@ const setupNav = () => {
 };
 
 /* ── HELPERS ── */
-const ava = (name, pic) => pic
-  ? `https://samra-fa-smart-med-ai-backend.hf.space/uploads/${pic}`
-  : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1447E6&color=fff&bold=true&size=200`;
-  
+const ava = (name, pic) => {
+  if (pic && pic.startsWith('data:')) {
+    return pic; // base64 image, use directly
+  }
+  if (pic) {
+    return `https://samra-fa-smart-med-ai-backend.hf.space/uploads/${pic}`;
+  }
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1447E6&color=fff&bold=true&size=200`;
+};
 const stars = (r = 0, m = 5) => {
   const n = Math.round(r);
   return '★'.repeat(n) + '☆'.repeat(m - n);

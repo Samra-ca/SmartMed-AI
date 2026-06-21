@@ -572,6 +572,18 @@
 
         /* ── PROFILE ── */
         const saveProfile = async () => {
+            const token = getToken();
+
+            // Check if token expired before making request
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (Date.now() >= payload.exp * 1000) {
+                    toast('Session expired. Please login again.', 'err');
+                    setTimeout(() => logout(), 1500);
+                    return;
+                }
+            } catch (e) { }
+
             const u = getUser();
             const fd = new FormData();
             const msg = document.getElementById('pmsg');

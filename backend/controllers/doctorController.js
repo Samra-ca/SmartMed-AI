@@ -3,7 +3,12 @@ const { db } = require('../config/firebase');
 exports.createProfile = async (req, res) => {
   try {
     const { name, specialization, city, consultationType, experience, bio, phone } = req.body;
-    const profilePic = req.file ? req.file.filename : '';
+
+    let profilePicData = null;
+    if (req.file) {
+      const base64 = req.file.buffer.toString('base64');
+      profilePicData = `data:${req.file.mimetype};base64,${base64}`;
+    }
 
     const docRef = db.collection('doctors').doc(req.user.id);
     const existing = await docRef.get();
@@ -15,11 +20,14 @@ exports.createProfile = async (req, res) => {
       experience: Number(experience) || 0,
       bio: bio || '',
       phone: phone || '',
-      profilePic,
-      isAvailable: true,
-      rating: 0,
+      isAvailable: existing.exists ? existing.data().isAvailable : true,
+      rating: existing.exists ? existing.data().rating || 0 : 0,
       updatedAt: new Date().toISOString()
     };
+
+    if (profilePicData) {
+      data.profilePic = profilePicData;
+    }
 
     if (existing.exists) {
       await docRef.update(data);
@@ -29,7 +37,9 @@ exports.createProfile = async (req, res) => {
 
     const updated = await docRef.get();
     res.status(201).json({ _id: updated.id, ...updated.data() });
+
   } catch (err) {
+    console.error('Create profile error:', err);
     res.status(500).json({ message: err.message });
   }
 };
