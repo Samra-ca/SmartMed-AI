@@ -216,7 +216,7 @@
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sb-profile">
-                <div class="sb-av" id="sb-av">D</div>
+                <div class="sb-av" id="sb-av" style="overflow:hidden;">D</div>
                 <div>
                     <div class="sb-name" id="sb-name">Doctor</div>
                     <div class="sb-role">Doctor Account</div>
@@ -444,6 +444,9 @@
                     document.getElementById('exp').value = d.experience || 0;
                     document.getElementById('phone').value = d.phone || '';
                     document.getElementById('bio').value = d.bio || '';
+                    if (d.profilePic) {
+                        document.getElementById('sb-av').innerHTML = `<img src="${ava(u.name, d.profilePic)}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"/>`;
+                    }
                 }
             } catch { }
 
@@ -608,6 +611,9 @@
                 if (r._id) {
                     msg.innerHTML = '<div class="alert a-ok">✅ Profile updated successfully!</div>';
                     toast('Profile saved!', 'ok');
+                    if (r.profilePic) {
+                        document.getElementById('sb-av').innerHTML = `<img src="${ava(u.name, r.profilePic)}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;"/>`;
+                    }
                 } else {
                     msg.innerHTML = `<div class="alert a-err">❌ ${r.message || 'Update failed'}</div>`;
                 }
